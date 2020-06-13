@@ -1,0 +1,32 @@
+import Rodados.*
+import pedidos.*
+import objetos.*
+
+describe "Test etapa 2" {
+		const cachito = new ChevroletCorsa()
+		const viaje1 = new Pedido(distancia = 960,
+								tiempoMax = 8,
+								cantPasajeros = 4
+								)
+			
+	fixture {
+		cachito.color(rojo)
+		viaje1.agregarIncompatible(azul)
+		viaje1.agregarIncompatible(negro)	
+	}
+
+	test "testCachito" {
+		assert.that(viaje1.puedeHacerElViaje(cachito))
+		
+		viaje1.cantPasajeros(6)
+		assert.notThat(viaje1.puedeHacerElViaje(cachito))
+		
+		viaje1.cantPasajeros(4)
+		viaje1.tiempoMax(6)
+		assert.notThat(viaje1.puedeHacerElViaje(cachito))
+		
+		viaje1.tiempoMax(8)
+		viaje1.agregarIncompatible(rojo)
+		assert.notThat(viaje1.puedeHacerElViaje(cachito))
+	}
+}

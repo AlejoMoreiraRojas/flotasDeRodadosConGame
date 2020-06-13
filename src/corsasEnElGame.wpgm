@@ -1,7 +1,51 @@
 import wollok.game.*
+import Rodados.*
+import Dependencia.*
+import objetos.*
 
 program corsasEnElGame {
-	// hacer las inicializaciones necesarias 
+	 
+	game.title("corsita")
 	
+	game.height(10)
+	game.width(10)
+	
+	const corsa1 = new ChevroletCorsa(color = rojo, position = game.at(0,0))
+	const corsa2 = new ChevroletCorsa(color = azul, position = game.at(0,1))
+	const corsa3 = new ChevroletCorsa(color = verde, position = game.at(0,2))
+	const dependencia = new Dependencia(flota = #{corsa1, corsa2, corsa3}, cantEmpleados = 30)
+	const pared1 = new Pared(position = game.at(1,7))
+	const pared2 = new Pared(position = game.at(2,7))
+	const pared3 = new Pared(position = game.at(3,7))
+	
+	game.addVisual(corsa1)
+	game.addVisual(corsa2)
+	game.addVisual(corsa3)
+			
+	keyboard.num1().onPressDo{dependencia.activar(corsa1)}
+	keyboard.num2().onPressDo{dependencia.activar(corsa2)}
+	keyboard.num3().onPressDo{dependencia.activar(corsa3)}
+	keyboard.t().onPressDo{dependencia.activarTodos()}
+	
+	keyboard.up().onPressDo{dependencia.autoActivo().forEach({a => a.moverHaciaArriba()})}
+	keyboard.down().onPressDo{dependencia.autoActivo().forEach({a => a.moverHaciaAbajo()})}
+	keyboard.right().onPressDo{dependencia.autoActivo().forEach({a => a.moverHaciaLaDerecha()})}
+	keyboard.left().onPressDo{dependencia.autoActivo().forEach({a => a.moverHaciaLaIzquierda()})}
+	
+	keyboard.a().onPressDo{dependencia.autoActivo().forEach({a => a.color(azul)})}
+	keyboard.v().onPressDo{dependencia.autoActivo().forEach({a => a.color(verde)})}
+	keyboard.r().onPressDo{dependencia.autoActivo().forEach({a => a.color(rojo)})}
+	
+	/*game.whenCollideDo(dependencia.autoActivo(), { pared =>  
+			dependencia.autoActivo().asList().first().mantenerPosicion()
+			dependencia.autoActivo().asList().first().chocar(pared)
+			game.removeVisual(pared)
+	} )
+	
+	game.onCollideDo(dependencia.autoActivo() , {pared1 =>
+		dependencia.autoActivo().forEach({a => a.mantenerPosicion()})
+		dependencia.autoActivo().forEach({a => a.chocar(pared1)})
+		})
+	*/
 	game.start()
 }

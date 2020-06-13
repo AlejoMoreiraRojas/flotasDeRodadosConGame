@@ -1,0 +1,107 @@
+import Rodados.*
+import Trafic.*
+import Dependencia.*
+import pedidos.*
+import objetos.*
+
+describe "TestDependencia" {
+		const cachito = new ChevroletCorsa()
+		const corsaAzul = new ChevroletCorsa()
+		const corsaVerde = new ChevroletCorsa()
+		
+		const kwidDepor = new RenaultKwid()
+		const kwidCultu1 = new RenaultKwid()
+		const kwidCultu2 = new RenaultKwid()
+		const kwidCultu3 = new RenaultKwid()
+		
+		const especial1 = new AutoEspecial()
+				
+		const deportes = new Dependencia()
+		const cultura = new Dependencia()
+		
+		const viaje1 = new Pedido(distancia = 960,
+								tiempoMax = 3,
+								cantPasajeros = 10
+								)
+		const viaje2 = new Pedido(distancia = 960,
+								tiempoMax = 8,
+								cantPasajeros = 4
+								)
+		const viaje3 = new Pedido(distancia = 500,
+								tiempoMax = 10,
+								cantPasajeros = 3
+								)
+		
+		
+	
+	fixture {
+		cachito.color(rojo)
+		corsaAzul.color(azul)
+		corsaVerde.color(verde)
+					
+		especial1.capacidad(5)
+		especial1.velMaxima(160)
+		especial1.peso(1200)
+		especial1.color(beige)
+		
+		kwidCultu3.sacarTanque()
+		
+		trafic.configurar(interiorPopular, motorBataton)
+		
+		deportes.agregarAFlota(cachito)
+		deportes.agregarAFlota(corsaAzul)
+		deportes.agregarAFlota(corsaVerde)
+		deportes.agregarAFlota(kwidDepor)
+		deportes.agregarAFlota(especial1)
+		deportes.agregarPedido(viaje1)
+		deportes.agregarPedido(viaje2)
+		deportes.agregarPedido(viaje3)
+		
+		cultura.agregarAFlota(cachito)
+		cultura.agregarAFlota(kwidCultu1)
+		cultura.agregarAFlota(kwidCultu2)
+		cultura.agregarAFlota(kwidCultu3)
+		cultura.agregarAFlota(trafic)
+		
+		viaje1.agregarIncompatible(rojo)
+		viaje1.agregarIncompatible(negro)
+		viaje2.agregarIncompatible(verde)
+		viaje2.agregarIncompatible(rojo)
+		viaje2.agregarIncompatible(azul)
+		viaje3.agregarIncompatible(beige)
+		viaje3.agregarIncompatible(celeste)
+		viaje3.agregarIncompatible(rojo)
+	}
+
+	test "testDeportes" {
+		
+		deportes.cantEmpleados(45)
+		
+		assert.equals(6450, deportes.pesoTotalFlota())
+		assert.that(deportes.estaBienEquipada())
+		assert.equals(7, deportes.capacidadTotalEnColor(azul))
+		assert.equals(beige, deportes.colorDelRodadoMasRapido())
+		assert.that(deportes.esGrande())
+		assert.equals(25, deportes.capacidadFaltante())
+	}
+	
+	test "testCultura"{
+		cultura.cantEmpleados(31)
+		assert.equals(10700, cultura.pesoTotalFlota())
+		assert.notThat(cultura.estaBienEquipada())
+		assert.equals(10, cultura.capacidadTotalEnColor(azul))
+		assert.equals(rojo, cultura.colorDelRodadoMasRapido())
+		assert.notThat(cultura.esGrande())
+		assert.equals(5, cultura.capacidadFaltante())
+	}
+	
+	test "test etapa3"{
+		assert.equals(#{viaje1}, deportes.noSonSatisfechos())
+		assert.notThat(deportes.esColorIncompatible(amarillo))
+		assert.that(deportes.esColorIncompatible(rojo))
+		deportes.relajar()
+		assert.equals(4, viaje1.tiempoMax())
+		assert.equals(9, viaje2.tiempoMax())
+		assert.equals(11, viaje3.tiempoMax())
+	}
+}
